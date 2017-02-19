@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"golang.org/x/net/context"
+	"context"
 )
 
 const (
@@ -121,7 +121,7 @@ func (s *Server) handleRequest(req *Request, conn conn) error {
 
 	// Resolve the address if we have a FQDN
 	dest := req.DestAddr
-	if dest.FQDN != "" {
+	if dest.FQDN != "" && s.config.Resolver != nil {
 		ctx_, addr, err := s.config.Resolver.Resolve(ctx, dest.FQDN)
 		if err != nil {
 			if err := sendReply(conn, hostUnreachable, nil); err != nil {
@@ -174,7 +174,11 @@ func (s *Server) handleConnect(ctx context.Context, conn conn, req *Request) err
 			return net.Dial(net_, addr)
 		}
 	}
-	target, err := dial(ctx, "tcp", req.realDestAddr.Address())
+	addr := req.realDestAddr.Address()
+	if req.realDestAddr.FQDN != "" {
+		addr = fmt.Sprintf("%s:%d", req.realDestAddr.FQDN, req.realDestAddr.Port)
+	}
+	target, err := dial(ctx, "tcp", addr)
 	if err != nil {
 		msg := err.Error()
 		resp := hostUnreachable

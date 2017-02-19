@@ -1,3 +1,7 @@
+
+
+修改:源项目默认在本地解析域名,修改后配置不提供Resolver就不再解析域名,调用Dial时,直接传参 域名+端口
+
 go-socks5 [![Build Status](https://travis-ci.org/armon/go-socks5.png)](https://travis-ci.org/armon/go-socks5)
 =========
 

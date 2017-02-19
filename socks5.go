@@ -7,7 +7,7 @@ import (
 	"net"
 	"os"
 
-	"golang.org/x/net/context"
+	"context"
 )
 
 const (
@@ -28,6 +28,7 @@ type Config struct {
 
 	// Resolver can be provided to do custom name resolution.
 	// Defaults to DNSResolver if not provided.
+	// 修改后如不提供则不解析域名
 	Resolver NameResolver
 
 	// Rules is provided to enable custom logic around permitting
@@ -69,9 +70,9 @@ func New(conf *Config) (*Server, error) {
 	}
 
 	// Ensure we have a DNS resolver
-	if conf.Resolver == nil {
-		conf.Resolver = DNSResolver{}
-	}
+	//	if conf.Resolver == nil {
+	//		conf.Resolver = DNSResolver{}
+	//	}
 
 	// Ensure we have a rule set
 	if conf.Rules == nil {
